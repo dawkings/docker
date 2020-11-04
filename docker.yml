@@ -1,0 +1,38 @@
+- name: adding docker repo
+  hosts: cli3
+  tasks:
+    - name: conf yum for docker
+      yum_repository:
+           name: docker_repo    
+           description: This is docker online repo
+           baseurl: https://download.docker.com/linux/centos/7/x86_64/stable/  
+           gpgcheck: no
+
+    - name: installing software for docker
+      command: "yum install docker-ce -y --nobest"
+                   
+    - name: starting docker service
+      service:
+              name: "docker"
+              state: started
+              enabled: yes
+
+    - name: installing  python software
+      package:
+          name: python36
+          state: present 
+
+    - name: installing pip library for docker
+      pip:
+        name: docker-py
+
+    - name: pull image for docker
+      docker_image:
+              name: ubuntu:14.04
+              source: pull
+
+    - name: run container
+      docker_container:
+              name: myosubq
+              image: ubuntu:14.04
+
